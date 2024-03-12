@@ -4,7 +4,7 @@ import { app } from "./app.js";
 
 // const path= import path from ex
 // const path = require('path');
-import * as path from 'path';
+// import * as path from 'path';
 dotenv.config({
     path:"./.env"
 })
