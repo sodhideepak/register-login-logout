@@ -25,7 +25,7 @@ import userrouter from "./routes/user.routes.js";
 app.use("/api/v1/users",userrouter)
 
 app.get('/',(req,res)=>{
-    res.send('hello howw are you')
+    res.send('hello howw are you what is your name')
     // res.sendFile(path.join(__dirname+'/index.html'))
 })
 

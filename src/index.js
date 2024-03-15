@@ -17,8 +17,8 @@ connectdb()
     })
 })
 
-// __dirname = path.resolve(path.dirname('src'));
-app.get('/',(req,res)=>{
-    res.send('hello haow are you')
-    // res.sendFile(path.join(__dirname+'/index.html'))
-})
+// // __dirname = path.resolve(path.dirname('src'));
+// app.get('/',(req,res)=>{
+//     res.send('hello haow are you')
+//     // res.sendFile(path.join(__dirname+'/index.html'))
+// })
