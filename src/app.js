@@ -25,7 +25,7 @@ import userrouter from "./routes/user.routes.js";
 app.use("/api/v1/users",userrouter)
 
 app.get('/',(req,res)=>{
-    res.send([[
+    res.send([
         {
           "_id": "65f4a3c904ca3a108b7d061c",
           "index": 0,
@@ -117,7 +117,7 @@ app.get('/',(req,res)=>{
           "email": "daysoto@miraclis.com",
           "phone": "+1 (855) 489-3006"
         }
-      ]])
+      ])
     // res.sendFile(path.join(__dirname+'/index.html'))
 })
 
