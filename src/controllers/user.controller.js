@@ -1,11 +1,52 @@
 import { asynchandler } from "../utils/asynchandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { user } from "../models/user.models.js";
-// import bcrypt from "bcrypt";
+import bcrypt from "bcrypt";
 import mongoose from "mongoose";
 import { uploadoncloudinary } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken"
+import * as nodemailer from "nodemailer"
+import Randomstring from "randomstring";
+
+
+const sendresetpasswordmail=asynchandler(async(fullname,email,token)=>{
+
+    try {
+        const transporter =nodemailer.createTransport({
+            host:"smtp.gmail.com",
+            port:587,
+            secure:false,
+            tls:{
+                rejectUnauthorized:false
+            },
+            // service:"gmail",
+            auth:{
+                user:process.env.emailusername,
+                pass:process.env.emailpassword
+            }
+        })
+
+        const mailoptions={
+            from:process.env.emailusername,
+            to:email,
+            subject:"for reset passowrd",
+            html:'<p> hii '+fullname+', please copy the link and <a href="http://localhost:8000/api/v1/users/resetpassword?token='+token+'" > reset your password </a></p>'
+        }
+
+        transporter.sendMail(mailoptions,function(error,info){
+            if (error) {
+                console.log(error)
+            } else {
+                console.log("mail has been sent :=",info.response);                
+            }
+        })
+
+        
+    } catch (error) {
+        throw new ApiError(400,error.message)
+    }
+})
 
 const generateAccessAndRefreshTokens=async(userid)=>{
     try {
@@ -267,16 +308,16 @@ const refreshAccessToken = asynchandler(async(req,res)=>{
 const changeCurrentPassword = asynchandler(async(req,res)=>{
     const {oldpassword,newpassword}=req.body
 
-    const user = await user.findById(req.user?._id)
-    const isPasswordcorrect = await user.isPasswordcorrect(oldpassword)
+    const User = await user.findById(req.user?._id)
+    const isPasswordcorrect = await User.isPasswordcorrect(oldpassword)
 
     if (!isPasswordcorrect) {
         throw new ApiError(400,"invalid password")
         
     }
 
-    user.password=newpassword
-    await user.save({validateBeforeSave:false})
+    User.password=newpassword
+    await User.save({validateBeforeSave:false})
 
     return res
     .status(200)
@@ -501,6 +542,52 @@ const getWatchHistory = asynchandler(async(req,res)=>{
         "watch history fetched sucessfully"))
 })
 
+const forgotpassword = asynchandler(async(req,res)=>{
+
+
+
+        const email = req.body.email
+        const userdata =await user.findOne({email:email})
+
+        if (userdata) {
+            const ramdomotp=Randomstring.generate()
+            await user.updateOne({email:email},{$set:{token:ramdomotp}})
+
+           sendresetpasswordmail(userdata.fullname,userdata.email,ramdomotp)
+
+            throw new ApiResponse(200,"please check your inbox for otp")
+        } else {
+            throw new ApiError(200,"user email does not exist")
+        }
+    
+
+})
+
+const resetpassword = asynchandler(async(req,res)=>{
+    const token =req.query.token
+
+    const User = await user.findOne({token:token})
+
+    if (User) {
+        const newpassword =req.body.password
+        // user.password=newpassword
+        // const securepassword= await bcrypt.hash(newpassword,10)
+        User.password=newpassword
+        await User.save({validateBeforeSave:false})
+        await user.findByIdAndUpdate({_id:User._id},{$set:{token:''}},{new:true})
+    
+    } else {
+        throw new ApiError(400,"link has been expired")
+    }
+    
+   
+    return res
+    .status(200)
+    .json(new ApiResponse(200,{},"password changed sucessfully"))
+})
+
+
+
 export {
         registeruser,
         loginuser,
@@ -512,5 +599,7 @@ export {
         updateUserAvatar,
         updateUsercoverImage,
         getUserChannelProfile,
-        getWatchHistory
+        getWatchHistory,
+        forgotpassword,
+        resetpassword
     }
