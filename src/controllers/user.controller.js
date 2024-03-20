@@ -555,7 +555,9 @@ const forgotpassword = asynchandler(async(req,res)=>{
 
            sendresetpasswordmail(userdata.fullname,userdata.email,ramdomotp)
 
-            throw new ApiResponse(200,"please check your inbox for otp")
+           return res
+           .status(200)
+           .json(new ApiResponse(200,"mail has been sent sucessfully"))
         } else {
             throw new ApiError(200,"user email does not exist")
         }
