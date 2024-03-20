@@ -31,7 +31,7 @@ const sendresetpasswordmail=asynchandler(async(fullname,email,token)=>{
             from:process.env.emailusername,
             to:email,
             subject:"for reset passowrd",
-            html:'<p> hii '+fullname+', please copy the link and <a href="http://localhost:8000/api/v1/users/resetpassword?token='+token+'" > reset your password </a></p>'
+            html:'<p> hii '+fullname+', please copy the link and <a href="https://register-login-logout.onrender.com/api/v1/resetpassword?token='+token+'" > reset your password </a></p>'
         }
 
         transporter.sendMail(mailoptions,function(error,info){
