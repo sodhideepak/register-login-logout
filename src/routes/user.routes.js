@@ -50,7 +50,7 @@ router.route("/avatar" ).patch(verifyJWT,upload.single("avatar"),updateUserAvata
 
 router.route("/coverimage" ).patch(verifyJWT,upload.single("coverimage"),updateUsercoverImage)
 
-router.route("/c/:username").get(verifyJWT,getUserChannelProfile)
+router.route("/channel-profile").get(verifyJWT,getUserChannelProfile)
 
 router.route("/history").get(verifyJWT,getWatchHistory)
 

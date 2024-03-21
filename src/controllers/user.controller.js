@@ -572,8 +572,6 @@ const resetpassword = asynchandler(async(req,res)=>{
 
     if (User) {
         const newpassword =req.body.password
-        // user.password=newpassword
-        // const securepassword= await bcrypt.hash(newpassword,10)
         User.password=newpassword
         await User.save({validateBeforeSave:false})
         await user.findByIdAndUpdate({_id:User._id},{$set:{token:''}},{new:true})
