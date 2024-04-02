@@ -18,11 +18,12 @@ app.use(express.static("public "))
 
 //routes import
 import userrouter from "./routes/user.routes.js";
-
+import productrouter from "./routes/product.routes.js"
 
 // routes declaration
 
 app.use("/api/v1/users",userrouter)
+app.use("/api/v1/users",productrouter)
 
 app.get('/',(req,res)=>{
     res.send([

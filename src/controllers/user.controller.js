@@ -78,17 +78,19 @@ const registeruser = asynchandler(async (req,res)=>{
     // remove refresh token field for input
     // check for user creation
     // return res
-    const {fullname,email,username,age, password}= req.body
+    const {fullname,email,username,age,height,weight,password}= req.body
     console.log("email =",email);
     console.log("fullname =",fullname);
     console.log("username=",username);
     console.log("password=",password);
+    console.log("height=",height);
+    console.log("weight=",weight);
     console.log("age=",age);
     // console.log("files=",req.files);
     // console.log("email =",email);
     
 
-    if([fullname,email,username,password].some((field)=> field?.trim()==="")) {
+    if([fullname,email,username,password,age].some((field)=> field?.trim()==="")) {
         throw new ApiError(400,"all fields are required")
     }
     const existeduser = await user.findOne(
@@ -131,7 +133,11 @@ const registeruser = asynchandler(async (req,res)=>{
         // coverimage:coverimage?.url || "",
         email,
         age,
+        height,
+        weight,
+        // healthcheck,
         password,
+        // bmi, 
         username: username.toLowerCase(),
 
     })
